@@ -9,15 +9,15 @@ const renderSource = fs.readFileSync(path.join(root, 'game-render.js'), 'utf8');
 
 test('Kyuubi is smaller and the following sprite has all-black fur', () => {
   const start = renderSource.indexOf('function drawDog');
-  const end = renderSource.indexOf('function drawHero', start);
+  const end = renderSource.indexOf('function drawTravelCar', start);
   assert.ok(start >= 0 && end > start, 'drawDog renderer must exist');
 
   const drawDog = renderSource.slice(start, end);
   assert.match(drawDog, /ctx\.scale\(face\*\.72,\.72\)/, 'Kyuubi should render at 72% scale');
 
-  const followingStart = drawDog.indexOf('}else{');
-  assert.ok(followingStart >= 0, 'following dog branch must exist');
-  const following = drawDog.slice(followingStart);
+  const followingMatch = drawDog.match(/else\{const step=[\s\S]*$/);
+  assert.ok(followingMatch, 'following dog branch must exist');
+  const following = followingMatch[0];
 
   assert.doesNotMatch(following, /\bwhite\b|\bshade\b|#f5f3eb|#fff|#8e6a54/, 'following fur should not contain white, shaded, or brown patches');
   assert.match(following, /rect\(-7,-2\+step,4,5-step,black\)/, 'following legs should be black');
