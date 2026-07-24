@@ -62,11 +62,11 @@ function staticBackground(){
  ctx.save();ctx.translate(-snap(cam),0);
  const porto=activePalette('porto'),amsterdam=activePalette('amsterdam');
  rect(0,205,2400,21,porto.water);portoRibeira(8,1200);domLuisBridge(380);clerigos(825);azulejoChurch(1030);portoRibeira(1210,2400);domLuisBridge(1480);clerigos(1985);azulejoChurch(2180);
- rect(2400,40,26,26,'#f0c93e');spanishBlocks(2408,2800);sagrada(2570);parisBlocks(2805,3200);eiffel(3000);arcTriomphe(3110);grandPlace(3205);atomium(3450,92);
- rect(3600,204,1200,22,amsterdam.water);const canalColors=['#b65b48','#d49a42','#365d78','#8d4854','#d3c19b'];for(let x=3608;x<4800;x+=46)canalHouse(x,164-(x%5)*6,canalColors[Math.floor(x/46)%canalColors.length],Math.floor(x/46)%3);windmill(4470,138);bicycle(4250,213);bicycle(4320,213);
+ rect(2400,40,26,26,'#f0c93e');spanishBlocks(2408,2800);sagrada(2570);parisBlocks(2805,3200);eiffel(3000);arcTriomphe(3110);grandPlace(3205);atomium(3450,113);
+ rect(3600,204,1200,22,amsterdam.water);const canalColors=['#b65b48','#d49a42','#365d78','#8d4854','#d3c19b'];for(let x=3608;x<4800;x+=46)canalHouse(x,164-(x%5)*6,canalColors[Math.floor(x/46)%canalColors.length],Math.floor(x/46)%3);windmill(4470,162);bicycle(4250,218);bicycle(4320,218);
  fuji(5350);torii(4930);pagoda(5700);cherryTrees(4810,6000);neonSkyline(6000,1200);gyeongbokgung(6160);seoulSign(6520,128,'#dd4d86');seoulSign(6600,120,'#45b9cf');namsan(7010);
- rect(7200,204,1200,22,amsterdam.water);for(let x=7208;x<8400;x+=46)canalHouse(x,164-(x%5)*6,canalColors[Math.floor(x/46)%canalColors.length],Math.floor(x/46)%3);windmill(8100,138);bicycle(7860,213);
- grandPlace(8405);atomium(8650,92);parisBlocks(8805,9200);eiffel(8990);arcTriomphe(9100);rect(9200,40,26,26,'#f0c93e');spanishBlocks(9208,9600);sagrada(9370);
+ rect(7200,204,1200,22,amsterdam.water);for(let x=7208;x<8400;x+=46)canalHouse(x,164-(x%5)*6,canalColors[Math.floor(x/46)%canalColors.length],Math.floor(x/46)%3);windmill(8100,162);bicycle(7860,218);
+ grandPlace(8405);atomium(8650,113);parisBlocks(8805,9200);eiffel(8990);arcTriomphe(9100);rect(9200,40,26,26,'#f0c93e');spanishBlocks(9208,9600);sagrada(9370);
  rect(9600,205,1200,21,porto.water);portoRibeira(9608,10800);domLuisBridge(9790);clerigos(10200);azulejoChurch(10420);drawWeddingVenue();
  if(window.VISUAL_STYLE?.isAnime()){
   ctx.globalAlpha=.12;for(let x=Math.floor(cam/24)*24;x<cam+W+48;x+=24)line(x,0,x-72,H,1,'#2b2345');ctx.globalAlpha=1;
