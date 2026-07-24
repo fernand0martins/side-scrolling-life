@@ -28,7 +28,7 @@
   <div class="progress"><div id="progress-bar"></div></div>
  </div>
  <div id="banner"><div id="banner-title"></div><div id="banner-sub"></div></div>
- <div id="message"><div id="message-title"></div><div id="message-detail"></div></div>
+ <div id="message"><div id="message-title"></div><div id="message-detail"></div><button id="restart-button" type="button"></button></div>
  <div id="fatal" role="alert"></div>
 </div>
 <div id="tips"></div>
@@ -58,6 +58,15 @@ function syncHearts(){
 }
 new MutationObserver(syncHearts).observe(livesCounter,{childList:true,characterData:true,subtree:true});
 syncHearts();
+const restartButton=document.querySelector('#restart-button');
+restartButton.textContent=T.controls.restart;
+restartButton.setAttribute('aria-label',T.controls.restart);
+restartButton.addEventListener('click',()=>window.location.reload());
+function syncRestartButton(){
+ const terminalState=window.__SIDE_SCROLLING_LIFE__?.getState?.().state;
+ restartButton.classList.toggle('show',terminalState==='over'||terminalState==='win');
+}
+window.setInterval(syncRestartButton,100);
 const controlButtons=document.querySelectorAll('.pad button');
 controlButtons[0].setAttribute('aria-label',T.controls.moveLeft);
 controlButtons[1].setAttribute('aria-label',T.controls.moveRight);
