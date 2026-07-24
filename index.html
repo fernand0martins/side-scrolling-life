@@ -13,8 +13,12 @@
   <div id="game-title" class="hud-title"></div>
   <div class="hud-row">
    <span><span id="score-label"></span> <strong id="score">00000</strong></span>
-   <span><span id="lives-label"></span> <strong id="lives">3</strong></span>
-   <span><span id="speed-label"></span> <strong id="speed">0%</strong></span>
+   <span id="life-status" class="life-status" role="img" aria-label="3 lives remaining">
+    <span id="lives-label"></span>
+    <span id="hearts" class="hearts" aria-hidden="true">
+     <span class="heart"></span><span class="heart"></span><span class="heart"></span>
+    </span>
+   </span>
   </div>
  </div>
  <div id="hud-right" class="hud">
@@ -41,7 +45,6 @@ document.title=T.title;
 document.querySelector('#game-title').textContent=T.hud.gameTitle;
 document.querySelector('#score-label').textContent=T.hud.score;
 document.querySelector('#lives-label').textContent=T.hud.lives;
-document.querySelector('#speed-label').textContent=T.hud.speed;
 document.querySelector('#tips').textContent=T.controls.tips;
 const controlButtons=document.querySelectorAll('.pad button');
 controlButtons[0].setAttribute('aria-label',T.controls.moveLeft);
