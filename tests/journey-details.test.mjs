@@ -18,6 +18,8 @@ test('journey details load after character styling and before hitbox wrapping',(
 test('additional coins are distributed through all travel stages',()=>{
  assert.match(details,/for\(let stage=0;stage<stages\.length-1;stage\+\+\)/);
  assert.match(details,/\[74,202\],\[372,202\],\[770,202\],\[1138,202\]/);
+ assert.match(details,/for\(const \[offset,y\] of extraCoinPattern\)/);
+ assert.doesNotMatch(details,/extraCoinPattern\[0\]/,'must iterate coordinate pairs, not the first pair values');
  assert.match(details,/coins\.push\(\{x:base\+offset/);
 });
 
