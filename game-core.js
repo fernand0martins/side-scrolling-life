@@ -1,5 +1,6 @@
 'use strict';
 
+const TEXT=window.GAME_TEXT;
 const canvas=document.querySelector('#game');
 const ctx=canvas.getContext('2d');
 ctx.imageSmoothingEnabled=false;
@@ -15,17 +16,7 @@ const W=480,H=270,GROUND=226,SEG=1200,WORLD_W=SEG*9,GRAVITY=780;
 const BASE_SPEED=70,MAX_SPEED=BASE_SPEED*2,GROUND_ACCELERATION=144,SPRINT_ACCELERATION=256,AIR_ACCELERATION=84,GROUND_DECELERATION=145,TURN_ACCELERATION=380;
 const DOG_X=SEG*6+310,FINISH_X=WORLD_W-92;
 
-const stages=[
- {id:'porto1',title:'PORTO',sub:'THE BEGINNING'},
- {id:'portoMeet',title:'PORTO',sub:'TOGETHER'},
- {id:'outbound',title:'THE ROAD NORTH',sub:'SPAIN · FRANCE · BELGIUM'},
- {id:'amsterdam1',title:'AMSTERDAM',sub:'A NEW HOME'},
- {id:'japan',title:'JAPAN',sub:'ACROSS THE WORLD'},
- {id:'korea',title:'KOREA',sub:'NEON NIGHTS'},
- {id:'amsterdam2',title:'AMSTERDAM',sub:'KYUUBI JOINS THE JOURNEY'},
- {id:'return',title:'THE ROAD HOME',sub:'BELGIUM · FRANCE · SPAIN'},
- {id:'portoFinal',title:'PORTO',sub:'THE WEDDING'}
-];
+const stages=TEXT.stages;
 
 const zones=[
  {a:0,b:1200,t:'porto'},{a:1200,b:2400,t:'porto'},
@@ -81,7 +72,7 @@ function teleportToStage(index){
  state='play';celebrating=false;celebrationClock=0;celebrationParticles=[];flameBursts=[];
  metGirl=index>=2;metDog=index>=7;dogTrailX=metDog?player.x-52:DOG_X;dogTrailY=GROUND;dogTrailFace=1;
  ui.bannerTitle.textContent=stages[index].title;ui.bannerSub.textContent=stages[index].sub;
- showMessage('STAGE '+(index+1),stages[index].title,.65);updateHud(true);
+ showMessage(TEXT.messages.stage(index+1),stages[index].title,.65);updateHud(true);
 }
 addEventListener('keydown',event=>{
  const name=keyName(event.code);
@@ -152,8 +143,8 @@ function showMessage(title,detail='',duration=1){
 function hurt(){
  if(player.inv||state!=='play')return;
  lives--;puff(player.x+7,player.y+10,12,'#ff5964');
- if(lives<=0){state='over';showMessage('GAME OVER','Press Enter, Space or R to restart',Infinity);return}
- player.x=spawn;player.y=198;player.vx=0;player.vy=-105;player.inv=1.6;showMessage('TRY AGAIN','',1);
+ if(lives<=0){state='over';showMessage(TEXT.messages.gameOverTitle,TEXT.messages.gameOverDetail,Infinity);return}
+ player.x=spawn;player.y=198;player.vx=0;player.vy=-105;player.inv=1.6;showMessage(TEXT.messages.tryAgain,'',1);
 }
 function updateMovement(dt){
  const direction=(key.right?1:0)-(key.left?1:0);
@@ -187,7 +178,7 @@ function launchFlames(){
 function beginCelebration(){
  if(celebrating)return;
  celebrating=true;state='win';player.vx=0;score+=3000+lives*500;
- spawnConfetti();launchFlames();showMessage('JUST MARRIED','Everyone is here · Final score: '+score,1.8);
+ spawnConfetti();launchFlames();showMessage(TEXT.messages.weddingTitle,TEXT.messages.weddingDetail(score),1.8);
 }
 
 function update(dt){
@@ -223,14 +214,14 @@ function update(dt){
    }
   }
   for(const checkpoint of checkpoints)if(!checkpoint.on&&player.x>checkpoint.x){
-   checkpoint.on=1;spawn=checkpoint.x-16;score+=200;showMessage('CHECKPOINT','',.75);
+   checkpoint.on=1;spawn=checkpoint.x-16;score+=200;showMessage(TEXT.messages.checkpoint,'',.75);
   }
   const currentStage=stageIndex(player.x);
   if(currentStage!==previousStage){
    previousStage=currentStage;bannerTime=2.2;ui.bannerTitle.textContent=stages[currentStage].title;ui.bannerSub.textContent=stages[currentStage].sub;
   }
-  if(!metGirl&&player.x>SEG+245){metGirl=true;score+=500;showMessage('TOGETHER','',1.1);puff(player.x+7,player.y+8,16,'#ff7fa5')}
-  if(!metDog&&player.x>DOG_X){metDog=true;dogTrailX=DOG_X;dogTrailY=GROUND;dogTrailFace=1;score+=500;showMessage('KYUUBI JOINS YOU','A small white heart on his chest',1.6);puff(DOG_X,GROUND-14,18,'#ffffff')}
+  if(!metGirl&&player.x>SEG+245){metGirl=true;score+=500;showMessage(TEXT.messages.together,'',1.1);puff(player.x+7,player.y+8,16,'#ff7fa5')}
+  if(!metDog&&player.x>DOG_X){metDog=true;dogTrailX=DOG_X;dogTrailY=GROUND;dogTrailFace=1;score+=500;showMessage(TEXT.messages.dogJoinedTitle,TEXT.messages.dogJoinedDetail,1.6);puff(DOG_X,GROUND-14,18,'#ffffff')}
   if(player.x>FINISH_X)beginCelebration();
  }
 
@@ -258,7 +249,6 @@ function updateHud(force=false){
  if(!force&&signature===lastHudSignature)return;lastHudSignature=signature;
  ui.score.textContent=String(score).padStart(5,'0');ui.lives.textContent=Math.max(0,lives);ui.speed.textContent=speedPercent+'%';
  ui.stageName.textContent=(currentStage+1)+' / '+stages.length+' · '+stages[currentStage].title;
- ui.stageSub.textContent=stages[currentStage].sub+(metDog?' · 🐕':'');
+ ui.stageSub.textContent=stages[currentStage].sub+(metDog?' · '+TEXT.hud.dogMarker:'');
  ui.progress.style.width=(clamp(player.x/WORLD_W,0,1)*100).toFixed(2)+'%';
 }
-
