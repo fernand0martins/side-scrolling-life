@@ -37,7 +37,8 @@ window.GAME_TEXT=Object.freeze({
   tips:'',
   moveLeft:'Move left',
   moveRight:'Move right',
-  jump:'Jump'
+  jump:'Jump',
+  restart:'RESTART'
  },
  errors:{
   startup:'The game could not start. Reload the page or check the browser console.',
