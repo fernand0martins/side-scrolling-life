@@ -1,4 +1,14 @@
 'use strict';
+
+const FINAL_STAGE_START=SEG*(stages.length-1);
+for(let i=platforms.length-1;i>=0;i--)if(platforms[i].x>=FINAL_STAGE_START)platforms.splice(i,1);
+platforms.push({x:FINAL_STAGE_START,y:GROUND,w:SEG,h:44,type:0,ceremony:true});
+for(let i=enemies.length-1;i>=0;i--)if(enemies[i].x>=FINAL_STAGE_START)enemies.splice(i,1);
+for(let i=coins.length-1;i>=0;i--)if(coins[i].x>=FINAL_STAGE_START)coins.splice(i,1);
+const standardConfettiBurst=spawnConfetti;
+spawnConfetti=function(){for(let burst=0;burst<4;burst++)standardConfettiBurst()};
+launchFlames=function(){flameBursts.length=0};
+
 function drawPlatform(p){
  const t=palette[themeAt(p.x)];
  if(p.type===0){rect(p.x,p.y,p.w,p.h,t.soil);rect(p.x,p.y,p.w,6,t.grass);for(let x=p.x+7;x<p.x+p.w;x+=17)rect(x,p.y+14,4,4,'#5e3a28')}
@@ -80,14 +90,8 @@ function drawWeddingAisle(){
   for(let i=0;i<7;i++){const px=x+i*8,py=126+(i%2)*5;rect(px,py,7,5,i%3===0?'#f6d7df':'#76a86e')}
  }
 }
-function drawWeddingFarGuests(){
- const start=FINISH_X-390;
- for(let i=0;i<12;i++)weddingGuest(start+i*31,190-(i%2)*3,i,false);
-}
-function drawWeddingNearGuests(){
- const start=FINISH_X-378;
- for(let i=0;i<11;i++)weddingGuest(start+i*34,GROUND+3+(i%2)*2,i+12,true);
-}
+function drawWeddingFarGuests(){const start=FINISH_X-390;for(let i=0;i<12;i++)weddingGuest(start+i*31,190-(i%2)*3,i,false)}
+function drawWeddingNearGuests(){const start=FINISH_X-378;for(let i=0;i<11;i++)weddingGuest(start+i*34,GROUND+3+(i%2)*2,i+12,true)}
 function drawOfficiant(){
  const x=FINISH_X+39,y=GROUND-25;
  rect(x+4,y,7,7,'#c99570');rect(x+3,y,9,2,'#494038');rect(x+1,y+7,13,17,'#4a395f');rect(x+5,y+8,5,13,'#efe7d5');rect(x-5,y+10,6,3,'#c99570');rect(x+14,y+10,6,3,'#c99570');rect(x+3,y+24,4,3,'#272333');rect(x+9,y+24,4,3,'#272333');
@@ -97,19 +101,21 @@ function drawWeddingPetals(){
  const t=player.anim;
  for(let i=0;i<22;i++){const x=FINISH_X-430+((i*47+t*15)%510),y=90+((i*29+t*9)%115);poly([[x,y],[x+3,y-2],[x+6,y+1],[x+3,y+4]],i%3===0?'#fff3f5':'#f4b7ca')}
 }
-function drawFlames(){for(const f of flameBursts){const k=clamp(f.t/1.15,0,1),h=(1-k)*12+48*k;poly([[f.x-9,GROUND],[f.x-5,GROUND-h*.6],[f.x,GROUND-h],[f.x+5,GROUND-h*.62],[f.x+10,GROUND]],'#ff713d');poly([[f.x-5,GROUND],[f.x-2,GROUND-h*.45],[f.x+1,GROUND-h*.7],[f.x+5,GROUND]],'#ffd447');rect(f.x-11,GROUND,22,4,'#2a2730')}}
 function drawCelebrationParticles(){for(const p of celebrationParticles){ctx.save();ctx.translate(snap(p.x),snap(p.y));ctx.rotate(p.spin);rect(-p.size/2,-1,p.size,2,p.color);ctx.restore()}}
 function drawCinematicOverlay(){
  const proximity=clamp((player.x-(FINISH_X-620))/420,0,1);if(proximity<=0)return;
  ctx.save();ctx.globalAlpha=.16*proximity;rect(0,0,W,H,'#2b1624');ctx.globalAlpha=.78*proximity;rect(0,0,W,8,'#09070b');rect(0,H-8,W,8,'#09070b');
- const gradient=ctx.createRadialGradient(W*.62,H*.5,45,W*.62,H*.5,250);gradient.addColorStop(0,'rgba(0,0,0,0)');gradient.addColorStop(1,`rgba(0,0,0,${.6*proximity})`);ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);ctx.restore();
+ if(typeof ctx.createRadialGradient==='function'){
+  const gradient=ctx.createRadialGradient(W*.62,H*.5,45,W*.62,H*.5,250);gradient.addColorStop(0,'rgba(0,0,0,0)');gradient.addColorStop(1,`rgba(0,0,0,${.6*proximity})`);ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);
+ }
+ ctx.restore();
 }
 function draw(){
  ctx.clearRect(0,0,W,H);staticBackground();
  ctx.save();ctx.translate(-snap(cam),0);
  for(const p of platforms)drawPlatform(p);for(const c of checkpoints)drawCheckpoint(c);drawGoal();
  for(const c of coins)drawCoin(c);for(const e of enemies)drawEnemy(e);
- drawWeddingAisle();drawWeddingFarGuests();drawOfficiant();drawWeddingPetals();drawGirlNpc();drawDogNpc();drawHero();drawWeddingNearGuests();drawFlames();
+ drawWeddingAisle();drawWeddingFarGuests();drawOfficiant();drawWeddingPetals();drawGirlNpc();drawDogNpc();drawHero();drawWeddingNearGuests();
  for(const p of particles)rect(p.x,p.y,p.size,p.size,p.color);drawCelebrationParticles();ctx.restore();drawCinematicOverlay();
 }
 function frame(timestamp){const dt=Math.min((timestamp-last)/1000||0,.05);last=timestamp;accumulator+=dt;while(accumulator>=1/120){update(1/120);accumulator-=1/120}draw();requestAnimationFrame(frame)}
