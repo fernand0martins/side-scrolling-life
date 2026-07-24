@@ -1,7 +1,7 @@
 'use strict';
 (() => {
- let anime=true;
- function apply(){document.body.dataset.visualStyle=anime?'anime':'classic'}
+ let anime=false;
+ function apply(){document.body.dataset.visualStyle=anime?'anime':'realistic'}
  function toggle(){anime=!anime;apply();return anime}
  window.VISUAL_STYLE=Object.freeze({isAnime:()=>anime,toggle});
  addEventListener('keydown',event=>{
