@@ -19,6 +19,8 @@
      <span class="heart"></span><span class="heart"></span><span class="heart"></span>
     </span>
    </span>
+   <strong id="lives" class="legacy-counter" aria-hidden="true">3</strong>
+   <strong id="speed" class="legacy-counter" aria-hidden="true">0%</strong>
   </div>
  </div>
  <div id="hud-right" class="hud">
@@ -46,6 +48,16 @@ document.querySelector('#game-title').textContent=T.hud.gameTitle;
 document.querySelector('#score-label').textContent=T.hud.score;
 document.querySelector('#lives-label').textContent=T.hud.lives;
 document.querySelector('#tips').textContent=T.controls.tips;
+const livesCounter=document.querySelector('#lives');
+const lifeStatus=document.querySelector('#life-status');
+const heartSlots=[...document.querySelectorAll('#hearts .heart')];
+function syncHearts(){
+ const remaining=Math.max(0,Math.min(3,Number.parseInt(livesCounter.textContent,10)||0));
+ heartSlots.forEach((heart,index)=>heart.classList.toggle('empty',index>=remaining));
+ lifeStatus.setAttribute('aria-label',`${remaining} ${remaining===1?'life':'lives'} remaining`);
+}
+new MutationObserver(syncHearts).observe(livesCounter,{childList:true,characterData:true,subtree:true});
+syncHearts();
 const controlButtons=document.querySelectorAll('.pad button');
 controlButtons[0].setAttribute('aria-label',T.controls.moveLeft);
 controlButtons[1].setAttribute('aria-label',T.controls.moveRight);
