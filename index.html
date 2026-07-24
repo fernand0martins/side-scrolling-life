@@ -61,7 +61,13 @@ syncHearts();
 const restartButton=document.querySelector('#restart-button');
 restartButton.textContent=T.controls.restart;
 restartButton.setAttribute('aria-label',T.controls.restart);
-restartButton.addEventListener('click',()=>window.location.reload());
+restartButton.addEventListener('pointerdown',event=>event.stopImmediatePropagation());
+restartButton.addEventListener('click',event=>{
+ event.preventDefault();
+ event.stopImmediatePropagation();
+ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyR',key:'r',bubbles:true}));
+ restartButton.classList.remove('show');
+});
 function syncRestartButton(){
  const terminalState=window.__SIDE_SCROLLING_LIFE__?.getState?.().state;
  restartButton.classList.toggle('show',terminalState==='over'||terminalState==='win');
