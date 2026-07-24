@@ -46,7 +46,9 @@ function spriteColors(){
  return['#ef6b38','#e75f8d'];
 }
 function drawDog(x,y,sitting=false,face=1){
- ctx.save();ctx.translate(snap(x),snap(y));ctx.scale(face,1);
+ ctx.save();
+ ctx.translate(snap(x),snap(y));
+ ctx.scale(face*.72,.72);
  const black='#151922',shade='#252b36',white='#f5f3eb';
  if(sitting){
   rect(-7,-15,13,15,black);rect(-5,-23,10,10,black);rect(-7,-26,4,6,black);rect(3,-26,4,6,black);
@@ -56,9 +58,8 @@ function drawDog(x,y,sitting=false,face=1){
  }else{
   const step=Math.floor(player.anim)%2;
   rect(-9,-13,17,11,black);rect(6,-18,9,10,black);rect(7,-22,4,6,black);rect(12,-21,4,5,black);
-  rect(-6,-9,4,3,white);rect(-1,-9,4,3,white);rect(-7,-7,11,3,white);rect(-5,-4,7,2,white);
-  rect(-7,-2+step,4,5-step,shade);rect(3,-2+(1-step),4,4+step,shade);rect(13,-15,3,2,'#8e6a54');
-  rect(9,-16,2,2,'#fff');line(-9,-11,-14,-17,3,black);
+  rect(-7,-2+step,4,5-step,black);rect(3,-2+(1-step),4,4+step,black);rect(13,-15,3,2,black);
+  rect(9,-16,2,2,'#707680');line(-9,-11,-14,-17,3,black);
  }
  ctx.restore();
 }
