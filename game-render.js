@@ -21,7 +21,7 @@ function drawEnemy(e){
  const x=e.x,y=e.y,face=e.v>=0?1:-1;
  ctx.save();ctx.translate(snap(x+12),snap(y));ctx.scale(face,1);
  if(e.type==='kid'){
-  rect(-6,1,12,8,'#f0bd91');rect(-7,8,14,10,'#2f69b1');rect(-7,10,14,2,'#fff');rect(-7,14,14,2,'#fff');rect(-6,18,5,6,'#25324a');rect(1,18,5,6,'#25324a');rect(-4,3,2,2,'#222');rect(2,3,2,2,'#222');
+  rect(-6,1,12,8,'#f0bd91');rect(-7,8,14,10,'#f7f7f2');rect(-7,8,3,10,'#2f69b1');rect(-2,8,3,10,'#2f69b1');rect(3,8,3,10,'#2f69b1');rect(-6,18,5,6,'#25324a');rect(1,18,5,6,'#25324a');rect(-4,3,2,2,'#222');rect(2,3,2,2,'#222');
  }else if(e.type==='bull'){
   rect(-11,8,20,12,'#5b3526');rect(7,4,10,12,'#6a3d29');poly([[-10,8],[-16,3],[-9,5]],'#eee1c1');poly([[13,5],[18,0],[16,8]],'#eee1c1');rect(10,8,2,2,'#111');rect(-8,20,5,4,'#3b261d');rect(3,20,5,4,'#3b261d');
  }else if(e.type==='mime'){
@@ -73,14 +73,32 @@ function drawDog(x,y,sitting=false,face=1){
  }
  ctx.restore();
 }
+function drawTravelCar(){
+ const bounce=player.on?Math.sin(player.anim*1.7)*.5:0;
+ ctx.save();ctx.translate(snap(player.x+7),snap(player.y+9+bounce));ctx.scale(player.face,1);
+ rect(-24,4,48,13,'#d9dde2');rect(-20,1,35,8,'#f7f7f3');poly([[-14,1],[-7,-7],[9,-7],[17,1]],'#f7f7f3');
+ rect(-10,-5,8,6,'#8bc2dc');rect(1,-5,8,6,'#8bc2dc');line(-1,-7,-1,2,1,'#9299a1');
+ rect(-8,-4,4,4,'#e4ad84');rect(3,-4,4,4,'#e4ad84');rect(-8,-5,4,1,'#5e3926');rect(3,-5,4,1,'#49302a');
+ rect(-25,8,4,4,'#ffd65e');rect(21,8,4,4,'#e55a5a');rect(-18,16,10,4,'#242a32');rect(9,16,10,4,'#242a32');
+ ctx.restore();
+}
 function drawHero(){
  if(player.inv&&Math.floor(player.inv*12)%2===0)return;
- const colors=spriteColors(),duo=metGirl||stageIndex(player.x)>1,wedding=stageIndex(player.x)===8;
+ const stage=stageIndex(player.x),colors=spriteColors(),duo=metGirl||stage>1,wedding=stage===8,travelling=stage===2||stage===7;
+ if(travelling){drawTravelCar();return}
  ctx.save();ctx.translate(snap(player.x+7),snap(player.y));ctx.scale(player.face,1);
  if(!duo)person(-6,0,colors[0],'#5e3926');
  else if(wedding){person(-13,-1,colors[0],'#5e3926','groom');person(2,-1,colors[1],'#49302a','bride')}
  else{person(-13,0,colors[0],'#5e3926');person(2,0,colors[1],'#49302a')}
  ctx.restore();
+}
+function drawTinyBirds(){
+ const stage=stageIndex(cam+W*.5);if(stage%2!==1)return;
+ const base=stage*SEG,t=player.anim;
+ for(let i=0;i<5;i++){
+  const x=base+90+((i*173+t*18)%(SEG-130)),y=42+(i*19)%54+Math.sin(t*2+i)*2;
+  line(x-3,y,x,y-2,1,'#263241');line(x,y-2,x+3,y,1,'#263241');
+ }
 }
 function drawGirlNpc(){if(metGirl)return;const x=SEG+245;if(x<cam-30||x>cam+W+30)return;person(x,GROUND-24,'#e75f8d','#49302a');rect(x+4,GROUND-39,8,5,'#ff789d');rect(x+7,GROUND-44,2,5,'#ff789d')}
 function drawDogNpc(){if(!metDog){if(DOG_X<cam-35||DOG_X>cam+W+35)return;drawDog(DOG_X,GROUND,true,1);return}drawDog(dogTrailX,dogTrailY,false,dogTrailFace)}
@@ -123,7 +141,7 @@ function drawCinematicOverlay(){
 function draw(){
  ctx.clearRect(0,0,W,H);staticBackground();
  ctx.save();ctx.translate(-snap(cam),0);
- for(const p of platforms)drawPlatform(p);for(const c of checkpoints)drawCheckpoint(c);drawGoal();
+ drawTinyBirds();for(const p of platforms)drawPlatform(p);for(const c of checkpoints)drawCheckpoint(c);drawGoal();
  for(const c of coins)drawCoin(c);for(const e of enemies)drawEnemy(e);
  drawWeddingAisle();drawWeddingFarGuests();drawOfficiant();drawWeddingPetals();drawGirlNpc();drawDogNpc();drawHero();drawWeddingNearGuests();
  for(const p of particles)rect(p.x,p.y,p.size,p.size,p.color);drawCelebrationParticles();ctx.restore();drawCinematicOverlay();
