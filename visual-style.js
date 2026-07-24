@@ -1,6 +1,6 @@
 'use strict';
 (() => {
- let anime=false;
+ let anime=true;
  function apply(){document.body.dataset.visualStyle=anime?'anime':'classic'}
  function toggle(){anime=!anime;apply();return anime}
  window.VISUAL_STYLE=Object.freeze({isAnime:()=>anime,toggle});
