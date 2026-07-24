@@ -8,8 +8,11 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const timer=fs.readFileSync(path.join(root,'run-timer.js'),'utf8');
 
-test('run timer loads immediately after the core game engine',()=>{
- assert.match(html,/<script src="game-core\.js"><\/script>\s*<script src="run-timer\.js"><\/script>/);
+test('run timer loads after the core game engine and before the world',()=>{
+ const coreIndex=html.indexOf('<script src="game-core.js"></script>');
+ const timerIndex=html.indexOf('<script src="run-timer.js"></script>');
+ const worldIndex=html.indexOf('<script src="game-world.js"></script>');
+ assert.ok(coreIndex>=0&&timerIndex>coreIndex&&worldIndex>timerIndex);
 });
 
 test('timer advances only during active play and resets on a full restart',()=>{
