@@ -126,7 +126,7 @@ test('index.html is a complete game document', () => {
   assert.match(html, /<canvas id="game" width="480" height="270"><\/canvas>/);
   assert.match(html, /SIDE SCROLLING LIFE/);
   assert.equal(inlineScripts.length, 1, 'expected one inline boot watchdog');
-  for (const file of ['game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}\"><\\/script>`));
+  for (const file of ['game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}"><\\/script>`));
   assert.match(html, /<link rel="stylesheet" href="styles\.css">/);
   assert.match(styles, /#fatal\.show/);
 });
@@ -185,6 +185,23 @@ test('double jump allows exactly two jumps before landing', () => {
   const third = api.getState();
   assert.equal(third.jumpsLeft, 0);
   assert.ok(third.velocityY > second.velocityY, 'third jump should not reset upward velocity');
+});
+
+test('acceleration reaches the 200% speed cap without exceeding it', () => {
+  const { sandbox } = bootGame();
+  const api = sandbox.__SIDE_SCROLLING_LIFE__;
+  api.teleportToStage(0);
+  api.setInput('right', true);
+  api.setInput('sprint', true);
+
+  api.step();
+  const firstStep = api.getState();
+  assert.ok(firstStep.velocityX > 2, 'expected the doubled sprint acceleration on the first frame');
+
+  for (let i = 0; i < 90; i++) api.step();
+  const atSpeed = api.getState();
+  assert.ok(atSpeed.velocityX >= 139, 'expected the player to reach the maximum speed');
+  assert.ok(atSpeed.velocityX <= 140, 'speed must not exceed 200% of the 70px/s base speed');
 });
 
 test('dog follows behind after the encounter', () => {
