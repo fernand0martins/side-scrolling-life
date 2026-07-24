@@ -18,13 +18,19 @@ test('restart button appears only for win or game-over states',()=>{
  assert.match(html,/restartButton\.classList\.toggle\('show'/);
 });
 
-test('restart button performs a clean reload',()=>{
- assert.match(html,/restartButton\.addEventListener\('click',\(\)=>window\.location\.reload\(\)\)/);
+test('restart button triggers the existing full reset path',()=>{
+ assert.match(html,/new KeyboardEvent\('keydown',\{code:'KeyR',key:'r',bubbles:true\}\)/);
+ assert.doesNotMatch(html,/window\.location\.reload/);
+});
+
+test('restart button is not intercepted by movement controls',()=>{
+ assert.match(html,/restartButton\.addEventListener\('pointerdown',event=>event\.stopImmediatePropagation\(\)\)/);
+ assert.match(html,/event\.stopImmediatePropagation\(\)/);
 });
 
 test('restart button is localized and interactive',()=>{
  assert.match(text,/restart:'RESTART'/);
  assert.match(css,/#restart-button\{display:none/);
  assert.match(css,/#restart-button\.show\{display:block\}/);
- assert.match(css,/pointer-events:auto/);
+ assert.match(css,/#message\.show\{display:block;pointer-events:auto\}/);
 });
