@@ -7,12 +7,12 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const visualStyle=fs.readFileSync(path.join(root,'visual-style.js'),'utf8');
 
- test('cinematic realistic visual style is enabled by default',()=>{
-  assert.match(visualStyle,/let anime=false/);
-  assert.match(visualStyle,/anime\?'anime':'realistic'/);
- });
+test('anime visual style is enabled by default',()=>{
+ assert.match(visualStyle,/let anime=true/);
+ assert.match(visualStyle,/anime\?'anime':'realistic'/);
+});
 
- test('K key still toggles between realistic and anime themes',()=>{
-  assert.match(visualStyle,/event\.code==='KeyK'/);
-  assert.match(visualStyle,/anime=!anime/);
- });
+test('K key still toggles between anime and realistic themes',()=>{
+ assert.match(visualStyle,/event\.code==='KeyK'/);
+ assert.match(visualStyle,/anime=!anime/);
+});
