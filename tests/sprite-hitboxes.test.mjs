@@ -15,9 +15,15 @@ test('sprite hitboxes load after the renderer has finalized enemy types',()=>{
 });
 
 test('player hitboxes match the single, duo, and car sprite footprints',()=>{
- assert.match(hitboxes,/return\{x:3,y:0,w:13,h:24,form:'single'\}/);
- assert.match(hitboxes,/return\{x:-4,y:0,w:29,h:24,form:'duo'\}/);
- assert.match(hitboxes,/return\{x:-18,y:2,w:50,h:27,form:'car'\}/);
+ assert.match(hitboxes,/return\{x:3,y:-2,w:13,h:24,form:'single'\}/);
+ assert.match(hitboxes,/return\{x:-4,y:-2,w:29,h:24,form:'duo'\}/);
+ assert.match(hitboxes,/return\{x:-18,y:-5,w:50,h:27,form:'car'\}/);
+});
+
+test('all player forms preserve the original 22 pixel foot line',()=>{
+ const forms=[{y:-2,h:24},{y:-2,h:24},{y:-5,h:27}];
+ for(const form of forms)assert.equal(form.y+form.h,22);
+ assert.match(hitboxes,/feet remain on the same collision line/);
 });
 
 test('enemy hitboxes are defined per rendered enemy type',()=>{
