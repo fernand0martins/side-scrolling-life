@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A dependency-free pixel-art side-scrolling journey.",
   "scripts": {
-    "test": "node --test tests/game.test.mjs"
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
