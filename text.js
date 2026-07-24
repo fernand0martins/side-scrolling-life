@@ -18,7 +18,7 @@ window.GAME_TEXT=Object.freeze({
   {id:'japan',title:'JAPAN',sub:'ACROSS THE WORLD'},
   {id:'korea',title:'KOREA',sub:'NEON NIGHTS'},
   {id:'amsterdam2',title:'AMSTERDAM',sub:'KYUUBI JOINS THE JOURNEY'},
-  {id:'return',title:'THE ROAD HOME',sub:'BELGIUM · FRANCE · SPAIN'},
+  {id:'return',title:'THE ROAD BACK',sub:'BELGIUM · FRANCE · SPAIN'},
   {id:'portoFinal',title:'PORTO',sub:'THE WEDDING'}
  ],
  messages:{
