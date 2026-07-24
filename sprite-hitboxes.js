@@ -19,6 +19,11 @@
   return{x:3,y:0,w:13,h:24,form:'single'};
  }
 
+ function platformBounds(platform){
+  if(platform.type===0)return{x:0,y:0,w:platform.w,h:platform.h,form:'ground'};
+  return{x:2,y:0,w:Math.max(1,platform.w-4),h:6,form:'ledge'};
+ }
+
  function applyBounds(entity,bounds){
   const originalWidth=entity.w,originalHeight=entity.h;
   entity.x+=bounds.x;entity.y+=bounds.y;entity.w=bounds.w;entity.h=bounds.h;
@@ -31,11 +36,14 @@
   const activePlayerBounds=playerBounds();
   const restorePlayer=applyBounds(player,activePlayerBounds);
   const restoreEnemies=[];
+  const restorePlatforms=[];
   for(const enemy of enemies){
    const bounds=enemyBounds[enemy.type];
    if(bounds)restoreEnemies.push(applyBounds(enemy,bounds));
   }
+  for(const platform of platforms)restorePlatforms.push(applyBounds(platform,platformBounds(platform)));
   try{originalUpdate(dt)}finally{
+   for(let i=restorePlatforms.length-1;i>=0;i--)restorePlatforms[i]();
    for(let i=restoreEnemies.length-1;i>=0;i--)restoreEnemies[i]();
    restorePlayer();
   }
@@ -43,6 +51,7 @@
 
  window.SPRITE_HITBOXES=Object.freeze({
   playerBounds:()=>({...playerBounds()}),
-  enemyBounds:type=>enemyBounds[type]?{...enemyBounds[type]}:null
+  enemyBounds:type=>enemyBounds[type]?{...enemyBounds[type]}:null,
+  platformBounds:platform=>({...platformBounds(platform)})
  });
 })();
