@@ -34,7 +34,7 @@ window.GAME_TEXT=Object.freeze({
   weddingDetail:score=>`Everyone is here · Final score: ${score}`
  },
  controls:{
-  tips:'',
+  tips:'K toggles visual style',
   moveLeft:'Move left',
   moveRight:'Move right',
   jump:'Jump'
