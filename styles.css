@@ -17,6 +17,7 @@ body[data-visual-style="anime"] .hud,body[data-visual-style="anime"] #banner,bod
 #banner-title{font-size:24px;font-weight:850;letter-spacing:.04em}#banner-sub{margin-top:3px;font-size:13px;font-weight:650;color:var(--accent)}
 #message{top:50%;transform:translate(-50%,-50%);min-width:390px;padding:23px 27px;display:none}#message.show{display:block}
 #message-title{font-size:28px;font-weight:850}#message-detail{margin-top:9px;font-size:14px;color:#dbe4f5}
+#restart-button{display:none;margin:17px auto 0;padding:9px 18px;border:1px solid rgba(255,255,255,.48);border-radius:9px;background:var(--accent);color:#17130b;font:inherit;font-size:13px;font-weight:850;letter-spacing:.04em;cursor:pointer;pointer-events:auto;box-shadow:0 5px 0 #9f7f12}#restart-button.show{display:block}#restart-button:hover{filter:brightness(1.08)}#restart-button:active{transform:translateY(3px);box-shadow:0 2px 0 #9f7f12}
 #fatal{display:none;position:absolute;z-index:20;inset:0;padding:32px;background:#080c16;color:#fff;align-items:center;justify-content:center;text-align:center;font-size:18px;line-height:1.5}#fatal.show{display:flex}
 #tips{position:fixed;z-index:8;top:9px;left:50%;transform:translateX(-50%);padding:7px 11px;border-radius:9px;background:rgba(8,12,22,.84);font-size:12px;font-weight:600;color:#eef3ff;pointer-events:none;transition:opacity .4s}
 .pad{display:none;position:fixed;bottom:18px;gap:12px;z-index:10}.pad.left{left:18px}.pad.right{right:18px}
@@ -33,5 +34,6 @@ body[data-visual-style="anime"] .hud,body[data-visual-style="anime"] #banner,bod
  #banner-title{font-size:13px}#banner-sub{margin-top:1px;font-size:8px}
  #message{min-width:0;width:min(72vw,220px);padding:10px 12px;border-radius:9px}
  #message-title{font-size:16px}#message-detail{margin-top:4px;font-size:10px;line-height:1.3}
+ #restart-button{margin-top:9px;padding:6px 12px;border-radius:6px;font-size:9px;box-shadow:0 3px 0 #9f7f12}
  #fatal{padding:18px;font-size:13px}
 }
