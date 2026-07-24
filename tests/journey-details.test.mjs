@@ -36,8 +36,9 @@ test('bone pickup has a dedicated rendered silhouette',()=>{
  assert.match(details,/rect\(x,y\+1,4,4,'#f5f0df'\)/);
 });
 
-test('flowers span the full final stage and increase towards the altar',()=>{
- assert.match(details,/start=\(stages\.length-1\)\*SEG\+18,end=FINISH_X\+28/);
+test('flowers begin at the exact start of the final stage and increase towards the altar',()=>{
+ assert.match(details,/start=\(stages\.length-1\)\*SEG,end=FINISH_X\+28/);
+ assert.doesNotMatch(details,/start=\(stages\.length-1\)\*SEG\+\d+/);
  assert.match(details,/progress=clamp\(\(x-start\)\/\(end-start\),0,1\)/);
  assert.match(details,/clusters=1\+Math\.floor\(progress\*3\)/);
  assert.match(details,/x\+=Math\.max\(12,42-progress\*27\)/);
