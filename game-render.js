@@ -24,13 +24,11 @@ function drawEnemy(e){
  }
  ctx.restore();
 }
-
 function person(x,y,body,hair,style='casual'){
  const step=Math.floor(player.anim)%2;
  rect(x+4,y,7,7,'#f0bd91');rect(x+3,y,9,2,hair);
  if(style==='bride'){
-  rect(x+2,y+7,11,9,'#f6f1e8');poly([[x-1,y+16],[x+15,y+16],[x+19,y+22],[x-5,y+22]],'#f6f1e8');
-  rect(x+1,y-3,13,3,'#f5f2ed');rect(x+13,y,3,12,'#e9e4de');
+  rect(x+2,y+7,11,9,'#f6f1e8');poly([[x-1,y+16],[x+15,y+16],[x+19,y+22],[x-5,y+22]],'#f6f1e8');rect(x+1,y-3,13,3,'#f5f2ed');rect(x+13,y,3,12,'#e9e4de');
  }else if(style==='groom'){
   rect(x+2,y+7,11,11,'#20242b');rect(x+6,y+7,3,8,'#f4f0e9');rect(x+7,y+8,1,3,'#111');rect(x+2,y+13,11,2,'#111');
  }else{
@@ -46,20 +44,12 @@ function spriteColors(){
  return['#ef6b38','#e75f8d'];
 }
 function drawDog(x,y,sitting=false,face=1){
- ctx.save();
- ctx.translate(snap(x),snap(y));
- ctx.scale(face*.72,.72);
+ ctx.save();ctx.translate(snap(x),snap(y));ctx.scale(face*.72,.72);
  const black='#151922',shade='#252b36',white='#f5f3eb';
  if(sitting){
-  rect(-7,-15,13,15,black);rect(-5,-23,10,10,black);rect(-7,-26,4,6,black);rect(3,-26,4,6,black);
-  rect(-9,-6,5,7,shade);rect(4,-6,5,7,shade);
-  rect(-4,-12,3,3,white);rect(1,-12,3,3,white);rect(-5,-10,10,3,white);rect(-4,-7,8,3,white);rect(-2,-4,4,2,white);
-  rect(-3,-20,2,2,'#fff');rect(2,-20,2,2,'#fff');rect(4,-16,3,2,'#8e6a54');
+  rect(-7,-15,13,15,black);rect(-5,-23,10,10,black);rect(-7,-26,4,6,black);rect(3,-26,4,6,black);rect(-9,-6,5,7,shade);rect(4,-6,5,7,shade);rect(-4,-12,3,3,white);rect(1,-12,3,3,white);rect(-5,-10,10,3,white);rect(-4,-7,8,3,white);rect(-2,-4,4,2,white);rect(-3,-20,2,2,'#fff');rect(2,-20,2,2,'#fff');rect(4,-16,3,2,'#8e6a54');
  }else{
-  const step=Math.floor(player.anim)%2;
-  rect(-9,-13,17,11,black);rect(6,-18,9,10,black);rect(7,-22,4,6,black);rect(12,-21,4,5,black);
-  rect(-7,-2+step,4,5-step,black);rect(3,-2+(1-step),4,4+step,black);rect(13,-15,3,2,black);
-  rect(9,-16,2,2,'#707680');line(-9,-11,-14,-17,3,black);
+  const step=Math.floor(player.anim)%2;rect(-9,-13,17,11,black);rect(6,-18,9,10,black);rect(7,-22,4,6,black);rect(12,-21,4,5,black);rect(-7,-2+step,4,5-step,black);rect(3,-2+(1-step),4,4+step,black);rect(13,-15,3,2,black);rect(9,-16,2,2,'#707680');line(-9,-11,-14,-17,3,black);
  }
  ctx.restore();
 }
@@ -72,64 +62,61 @@ function drawHero(){
  else{person(-13,0,colors[0],'#5e3926');person(2,0,colors[1],'#49302a')}
  ctx.restore();
 }
-function drawGirlNpc(){
- if(metGirl)return;const x=SEG+245;if(x<cam-30||x>cam+W+30)return;
- person(x,GROUND-24,'#e75f8d','#49302a');rect(x+4,GROUND-39,8,5,'#ff789d');rect(x+7,GROUND-44,2,5,'#ff789d');
-}
-function drawDogNpc(){
- if(!metDog){if(DOG_X<cam-35||DOG_X>cam+W+35)return;drawDog(DOG_X,GROUND,true,1);return}
- drawDog(dogTrailX,dogTrailY,false,dogTrailFace);
-}
+function drawGirlNpc(){if(metGirl)return;const x=SEG+245;if(x<cam-30||x>cam+W+30)return;person(x,GROUND-24,'#e75f8d','#49302a');rect(x+4,GROUND-39,8,5,'#ff789d');rect(x+7,GROUND-44,2,5,'#ff789d')}
+function drawDogNpc(){if(!metDog){if(DOG_X<cam-35||DOG_X>cam+W+35)return;drawDog(DOG_X,GROUND,true,1);return}drawDog(dogTrailX,dogTrailY,false,dogTrailFace)}
 function drawCheckpoint(c){rect(c.x,181,3,45,'#f0ead9');rect(c.x+3,182,21,10,c.on?'#ffd447':'#e84d6b')}
-function drawGoal(){rect(FINISH_X+22,135,5,91,'#f5f0df');rect(FINISH_X+27,140,28,15,'#e84d6b');rect(FINISH_X+35,145,4,4,'#fff')}
-
-function drawCrowd(){
- const start=FINISH_X-88,colors=['#315d91','#d95e43','#e3b54c','#47a1b3','#8b5dc7','#6aad73','#e75f8d'];
- for(let row=0;row<3;row++)for(let i=0;i<11;i++){
-  const x=start+i*18+(row%2)*8,y=GROUND-23-row*14;
-  rect(x+3,y,7,7,['#e8b78d','#a96d4c','#6e4936','#d8a47f'][i%4]);rect(x+3,y,7,2,['#3b2d28','#6d4b2e','#1f2028'][i%3]);
-  rect(x+1,y+7,11,13,colors[(i+row)%colors.length]);rect(x+3,y+20,3,4,'#202838');rect(x+8,y+20,3,4,'#202838');
-  if((i+row)%4===0){rect(x+4,y-8,4,4,'#ff7fa5');rect(x+6,y-12,2,4,'#ff7fa5')}
+function drawGoal(){const x=FINISH_X+26;rect(x,151,4,75,'#f4ead5');rect(x+34,151,4,75,'#f4ead5');poly([[x-5,155],[x+17,131],[x+39,155]],'#f7f0df');rect(x+8,168,19,5,'#dfc79c')}
+function weddingGuest(x,y,index,near=false){
+ const skin=['#e8b78d','#a96d4c','#6e4936','#d8a47f'][index%4],hair=['#3b2d28','#6d4b2e','#1f2028'][index%3],clothes=['#315d91','#d95e43','#e3b54c','#47a1b3','#8b5dc7','#6aad73','#e75f8d'][index%7],s=near?1.12:.9;
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);rect(3,-21,7,7,skin);rect(3,-21,7,2,hair);rect(1,-14,11,13,clothes);rect(3,-1,3,4,'#202838');rect(8,-1,3,4,'#202838');if(index%4===0){rect(4,-29,4,4,'#ff7fa5');rect(6,-33,2,4,'#ff7fa5')}ctx.restore();
+}
+function drawWeddingAisle(){
+ const start=FINISH_X-410,end=FINISH_X+55;
+ poly([[start,GROUND],[end,GROUND],[end-16,GROUND-18],[start+20,GROUND-10]],'#efe3cf');
+ for(let x=start+34;x<end-45;x+=58){rect(x,GROUND-7,2,7,'#d8c3a5');rect(x+26,GROUND-7,2,7,'#d8c3a5')}
+ for(let x=start+42;x<end-55;x+=74){
+  line(x,GROUND-3,x+2,128,4,'#6f573f');line(x+45,GROUND-3,x+43,128,4,'#6f573f');
+  poly([[x-5,137],[x+7,119],[x+22,126],[x+43,119],[x+52,138]],'#4f8b58');
+  for(let i=0;i<7;i++){const px=x+i*8,py=126+(i%2)*5;rect(px,py,7,5,i%3===0?'#f6d7df':'#76a86e')}
  }
 }
-function drawFlames(){
- for(const f of flameBursts){
-  const k=clamp(f.t/1.15,0,1),h=(1-k)*12+48*k;
-  poly([[f.x-9,GROUND],[f.x-5,GROUND-h*.6],[f.x,GROUND-h],[f.x+5,GROUND-h*.62],[f.x+10,GROUND]],'#ff713d');
-  poly([[f.x-5,GROUND],[f.x-2,GROUND-h*.45],[f.x+1,GROUND-h*.7],[f.x+5,GROUND]],'#ffd447');
-  rect(f.x-11,GROUND,22,4,'#2a2730');
- }
+function drawWeddingFarGuests(){
+ const start=FINISH_X-390;
+ for(let i=0;i<12;i++)weddingGuest(start+i*31,190-(i%2)*3,i,false);
 }
-function drawCelebrationParticles(){
- for(const p of celebrationParticles){
-  ctx.save();ctx.translate(snap(p.x),snap(p.y));ctx.rotate(p.spin);rect(-p.size/2,-1,p.size,2,p.color);ctx.restore();
- }
+function drawWeddingNearGuests(){
+ const start=FINISH_X-378;
+ for(let i=0;i<11;i++)weddingGuest(start+i*34,GROUND+3+(i%2)*2,i+12,true);
+}
+function drawOfficiant(){
+ const x=FINISH_X+39,y=GROUND-25;
+ rect(x+4,y,7,7,'#c99570');rect(x+3,y,9,2,'#494038');rect(x+1,y+7,13,17,'#4a395f');rect(x+5,y+8,5,13,'#efe7d5');rect(x-5,y+10,6,3,'#c99570');rect(x+14,y+10,6,3,'#c99570');rect(x+3,y+24,4,3,'#272333');rect(x+9,y+24,4,3,'#272333');
+}
+function drawWeddingPetals(){
+ if(player.x<FINISH_X-520)return;
+ const t=player.anim;
+ for(let i=0;i<22;i++){const x=FINISH_X-430+((i*47+t*15)%510),y=90+((i*29+t*9)%115);poly([[x,y],[x+3,y-2],[x+6,y+1],[x+3,y+4]],i%3===0?'#fff3f5':'#f4b7ca')}
+}
+function drawFlames(){for(const f of flameBursts){const k=clamp(f.t/1.15,0,1),h=(1-k)*12+48*k;poly([[f.x-9,GROUND],[f.x-5,GROUND-h*.6],[f.x,GROUND-h],[f.x+5,GROUND-h*.62],[f.x+10,GROUND]],'#ff713d');poly([[f.x-5,GROUND],[f.x-2,GROUND-h*.45],[f.x+1,GROUND-h*.7],[f.x+5,GROUND]],'#ffd447');rect(f.x-11,GROUND,22,4,'#2a2730')}}
+function drawCelebrationParticles(){for(const p of celebrationParticles){ctx.save();ctx.translate(snap(p.x),snap(p.y));ctx.rotate(p.spin);rect(-p.size/2,-1,p.size,2,p.color);ctx.restore()}}
+function drawCinematicOverlay(){
+ const proximity=clamp((player.x-(FINISH_X-620))/420,0,1);if(proximity<=0)return;
+ ctx.save();ctx.globalAlpha=.16*proximity;rect(0,0,W,H,'#2b1624');ctx.globalAlpha=.78*proximity;rect(0,0,W,8,'#09070b');rect(0,H-8,W,8,'#09070b');
+ const gradient=ctx.createRadialGradient(W*.62,H*.5,45,W*.62,H*.5,250);gradient.addColorStop(0,'rgba(0,0,0,0)');gradient.addColorStop(1,`rgba(0,0,0,${.6*proximity})`);ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);ctx.restore();
 }
 function draw(){
  ctx.clearRect(0,0,W,H);staticBackground();
  ctx.save();ctx.translate(-snap(cam),0);
  for(const p of platforms)drawPlatform(p);for(const c of checkpoints)drawCheckpoint(c);drawGoal();
  for(const c of coins)drawCoin(c);for(const e of enemies)drawEnemy(e);
- drawCrowd();drawGirlNpc();drawDogNpc();drawHero();drawFlames();
- for(const p of particles)rect(p.x,p.y,p.size,p.size,p.color);
- drawCelebrationParticles();
- ctx.restore();
+ drawWeddingAisle();drawWeddingFarGuests();drawOfficiant();drawWeddingPetals();drawGirlNpc();drawDogNpc();drawHero();drawWeddingNearGuests();drawFlames();
+ for(const p of particles)rect(p.x,p.y,p.size,p.size,p.color);drawCelebrationParticles();ctx.restore();drawCinematicOverlay();
 }
-function frame(timestamp){
- const dt=Math.min((timestamp-last)/1000||0,.05);last=timestamp;accumulator+=dt;
- while(accumulator>=1/120){update(1/120);accumulator-=1/120}
- draw();requestAnimationFrame(frame);
-}
+function frame(timestamp){const dt=Math.min((timestamp-last)/1000||0,.05);last=timestamp;accumulator+=dt;while(accumulator>=1/120){update(1/120);accumulator-=1/120}draw();requestAnimationFrame(frame)}
 setTimeout(()=>document.querySelector('#tips').style.opacity='.35',7000);
 window.__SIDE_SCROLLING_LIFE__=Object.freeze({
  getState:()=>({stage:stageIndex(player.x),playerX:player.x,playerY:player.y,velocityX:player.vx,velocityY:player.vy,jumpsLeft:player.jumpsLeft,metGirl,metDog,dogX:dogTrailX,dogY:dogTrailY,state}),
- getEnemySummary:()=>enemies.map(enemy=>({type:enemy.type,x:enemy.x,on:enemy.on})),
- teleportToStage,
- setInput:(name,value)=>{if(Object.prototype.hasOwnProperty.call(key,name))key[name]=value?1:0},
- jump:()=>{pressed.jump=1},
- step:(dt=1/120)=>{update(dt);draw()}
+ getEnemySummary:()=>enemies.map(enemy=>({type:enemy.type,x:enemy.x,on:enemy.on})),teleportToStage,
+ setInput:(name,value)=>{if(Object.prototype.hasOwnProperty.call(key,name))key[name]=value?1:0},jump:()=>{pressed.jump=1},step:(dt=1/120)=>{update(dt);draw()}
 });
-draw();
-canvas.dataset.ready='true';
-window.__SIDE_SCROLLING_LIFE_BOOTED__=true;
-requestAnimationFrame(frame);
+draw();canvas.dataset.ready='true';window.__SIDE_SCROLLING_LIFE_BOOTED__=true;requestAnimationFrame(frame);
