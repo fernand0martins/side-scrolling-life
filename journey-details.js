@@ -47,8 +47,8 @@
  const baseWeddingAisle=drawWeddingAisle;
  drawWeddingAisle=function(){
   baseWeddingAisle();
-  const start=FINISH_X-410,end=FINISH_X+28;
-  let x=start+18,index=0;
+  const start=(stages.length-1)*SEG+18,end=FINISH_X+28;
+  let x=start,index=0;
   while(x<end){
    const progress=clamp((x-start)/(end-start),0,1);
    const clusters=1+Math.floor(progress*3);
@@ -59,7 +59,7 @@
     rect(fx-2,fy-2,3,3,(index+flower)%3===0?'#fff3f5':'#f4a9c2');
     rect(fx+1,fy-1,3,3,(index+flower)%2===0?'#f7d36d':'#f6d7df');
    }
-   x+=Math.max(12,34-progress*19);
+   x+=Math.max(12,42-progress*27);
    index++;
   }
  };
