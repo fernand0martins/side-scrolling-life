@@ -29,12 +29,12 @@ window.GAME_TEXT=Object.freeze({
   checkpoint:'CHECKPOINT',
   together:'TOGETHER',
   dogJoinedTitle:'KYUUBI JOINS YOU',
-  dogJoinedDetail:'A small white heart on her chest',
+  dogJoinedDetail:'',
   weddingTitle:'JUST MARRIED',
   weddingDetail:score=>`Everyone is here · Final score: ${score}`
  },
  controls:{
-  tips:'K toggles visual style',
+  tips:'',
   moveLeft:'Move left',
   moveRight:'Move right',
   jump:'Jump'
