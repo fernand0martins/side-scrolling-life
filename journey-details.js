@@ -47,7 +47,7 @@
  const baseWeddingAisle=drawWeddingAisle;
  drawWeddingAisle=function(){
   baseWeddingAisle();
-  const start=(stages.length-1)*SEG+18,end=FINISH_X+28;
+  const start=(stages.length-1)*SEG,end=FINISH_X+28;
   let x=start,index=0;
   while(x<end){
    const progress=clamp((x-start)/(end-start),0,1);
