@@ -4,6 +4,7 @@ const FINAL_STAGE_START=SEG*(stages.length-1);
 for(let i=platforms.length-1;i>=0;i--)if(platforms[i].x>=FINAL_STAGE_START)platforms.splice(i,1);
 platforms.push({x:FINAL_STAGE_START,y:GROUND,w:SEG,h:44,type:0,ceremony:true});
 for(let i=enemies.length-1;i>=0;i--)if(enemies[i].x>=FINAL_STAGE_START)enemies.splice(i,1);
+for(const enemy of enemies)if(enemy.type==='baguette')enemy.type='mime';
 for(let i=coins.length-1;i>=0;i--)if(coins[i].x>=FINAL_STAGE_START)coins.splice(i,1);
 const standardConfettiBurst=spawnConfetti;
 spawnConfetti=function(){for(let burst=0;burst<4;burst++)standardConfettiBurst()};
@@ -23,8 +24,17 @@ function drawEnemy(e){
   rect(-6,1,12,8,'#f0bd91');rect(-7,8,14,10,'#2f69b1');rect(-7,10,14,2,'#fff');rect(-7,14,14,2,'#fff');rect(-6,18,5,6,'#25324a');rect(1,18,5,6,'#25324a');rect(-4,3,2,2,'#222');rect(2,3,2,2,'#222');
  }else if(e.type==='bull'){
   rect(-11,8,20,12,'#5b3526');rect(7,4,10,12,'#6a3d29');poly([[-10,8],[-16,3],[-9,5]],'#eee1c1');poly([[13,5],[18,0],[16,8]],'#eee1c1');rect(10,8,2,2,'#111');rect(-8,20,5,4,'#3b261d');rect(3,20,5,4,'#3b261d');
- }else if(e.type==='baguette'){
-  poly([[-13,7],[-8,1],[12,5],[14,12],[9,18],[-11,14]],'#d89d4d');rect(-7,5,3,8,'#f0c779');rect(0,6,3,8,'#f0c779');rect(7,7,3,8,'#f0c779');rect(10,9,2,2,'#222');
+ }else if(e.type==='mime'){
+  const step=Math.floor(player.anim)%2;
+  rect(-6,-1,12,8,'#f3eee8');rect(-7,-4,14,4,'#15171c');
+  rect(-5,1,2,2,'#222');rect(3,1,2,2,'#222');rect(-2,5,4,1,'#b64855');
+  rect(-7,7,14,11,'#f5f2ed');rect(-7,9,14,2,'#17191f');rect(-7,13,14,2,'#17191f');
+  rect(-8,18+step,5,6-step,'#17191f');rect(3,18+(1-step),5,5+step,'#17191f');
+  rect(-10,8,3,9,'#f3eee8');rect(7,8,3,9,'#f3eee8');rect(-11,15,4,3,'#17191f');rect(7,15,4,3,'#17191f');
+  ctx.save();ctx.translate(10,7);ctx.rotate(-.38);
+  poly([[-2,-5],[2,-7],[7,15],[4,19],[0,17],[-4,-3]],'#d89d4d');
+  rect(-1,-2,5,2,'#f0c779');rect(1,5,5,2,'#f0c779');rect(3,12,4,2,'#f0c779');
+  ctx.restore();
  }else if(e.type==='cyclist'){
   ctx.strokeStyle='#252b34';ctx.lineWidth=2;ctx.beginPath();ctx.arc(-8,18,6,0,Math.PI*2);ctx.arc(10,18,6,0,Math.PI*2);ctx.stroke();line(-8,18,0,7,2,'#c44747');line(0,7,10,18,2,'#c44747');line(-8,18,5,18,2,'#c44747');rect(-2,-2,8,8,'#f0bd91');rect(-4,6,11,8,'#315d91');rect(-1,-5,7,3,'#ffd447');
  }else if(e.type==='ninja'){
