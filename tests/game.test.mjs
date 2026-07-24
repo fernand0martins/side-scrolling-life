@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const gameSources = ['game-core.js', 'game-world.js', 'game-render.js'].map(file => ({ file, source: fs.readFileSync(path.join(root, file), 'utf8') }));
+const gameSources = ['text.js', 'game-core.js', 'game-world.js', 'game-render.js'].map(file => ({ file, source: fs.readFileSync(path.join(root, file), 'utf8') }));
 const styles = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const inlineScripts = [...html.matchAll(/<script(?![^>]*\bsrc=)(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]);
 
@@ -54,6 +54,7 @@ function bootGame() {
       dataset: {},
       classList: makeClassList(),
       addEventListener() {},
+      setAttribute(name,value) { this[name]=value; },
       getContext: () => context2d
     };
   }
@@ -76,7 +77,7 @@ function bootGame() {
       return elements.get(selector);
     },
     querySelectorAll(selector) {
-      return selector === 'button' ? buttons : [];
+      return selector === 'button' || selector === '.pad button' ? buttons : [];
     }
   };
 
@@ -105,10 +106,12 @@ function bootGame() {
   sandbox.globalThis = sandbox;
 
   const context = vm.createContext(sandbox);
+  const [textConfig, ...runtimeSources] = gameSources;
+  new vm.Script(textConfig.source, { filename: textConfig.file }).runInContext(context);
   for (const [index, source] of inlineScripts.entries()) {
     new vm.Script(source, { filename: `inline-script-${index + 1}.js` }).runInContext(context);
   }
-  for (const { file, source } of gameSources) new vm.Script(source, { filename: file }).runInContext(context);
+  for (const { file, source } of runtimeSources) new vm.Script(source, { filename: file }).runInContext(context);
 
   return {
     sandbox,
@@ -124,9 +127,9 @@ function bootGame() {
 
 test('index.html is a complete game document', () => {
   assert.match(html, /<canvas id="game" width="480" height="270"><\/canvas>/);
-  assert.match(html, /SIDE SCROLLING LIFE/);
+  assert.match(html, /<div id="game-title" class="hud-title"><\/div>/);
   assert.equal(inlineScripts.length, 1, 'expected one inline boot watchdog');
-  for (const file of ['game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}"><\\/script>`));
+  for (const file of ['text.js','game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}\"><\\/script>`));
   assert.match(html, /<link rel="stylesheet" href="styles\.css">/);
   assert.match(styles, /#fatal\.show/);
 });
