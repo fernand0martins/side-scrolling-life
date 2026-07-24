@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const gameSources = ['text.js', 'game-core.js', 'game-world.js', 'game-render.js'].map(file => ({ file, source: fs.readFileSync(path.join(root, file), 'utf8') }));
+const scriptFiles = [...html.matchAll(/<script\s+src="([^"]+)"\s*><\/script>/gi)].map(match => match[1]);
+const gameSources = scriptFiles.map(file => ({ file, source: fs.readFileSync(path.join(root, file), 'utf8') }));
 const styles = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const inlineScripts = [...html.matchAll(/<script(?![^>]*\bsrc=)(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(match => match[1]);
 
@@ -28,6 +29,7 @@ function makeClassList() {
 function bootGame() {
   const listeners = new Map();
   const timers = [];
+  const intervals = [];
   const animationFrames = [];
   let fillRectCalls = 0;
   let clearRectCalls = 0;
@@ -37,6 +39,7 @@ function bootGame() {
       if (property === 'fillRect') return () => { fillRectCalls++; };
       if (property === 'clearRect') return () => { clearRectCalls++; };
       if (property === 'measureText') return () => ({ width: 0 });
+      if (property === 'createRadialGradient') return () => ({ addColorStop() {} });
       if (!(property in target)) target[property] = () => {};
       return target[property];
     },
@@ -62,7 +65,8 @@ function bootGame() {
   const elementIds = [
     'game', 'score', 'lives', 'speed', 'stage-name', 'stage-sub',
     'progress-bar', 'banner', 'banner-title', 'banner-sub', 'message',
-    'message-title', 'message-detail', 'shell', 'tips', 'fatal'
+    'message-title', 'message-detail', 'shell', 'tips', 'fatal',
+    'game-title', 'score-label', 'lives-label', 'life-status', 'restart-button'
   ];
   const elements = new Map(elementIds.map(id => [`#${id}`, makeElement(id)]));
   const buttons = ['left', 'right', 'jump'].map(key => {
@@ -70,16 +74,28 @@ function bootGame() {
     button.dataset.key = key;
     return button;
   });
+  const hearts = [makeElement(),makeElement(),makeElement()];
+  const body = makeElement('body');
 
   const document = {
+    body,
+    title: '',
     querySelector(selector) {
       if (!elements.has(selector)) elements.set(selector, makeElement(selector));
       return elements.get(selector);
     },
     querySelectorAll(selector) {
-      return selector === 'button' || selector === '.pad button' ? buttons : [];
+      if (selector === 'button' || selector === '.pad button') return buttons;
+      if (selector === '#hearts .heart') return hearts;
+      return [];
     }
   };
+
+  class MutationObserver {
+    constructor(callback) { this.callback=callback; }
+    observe() {}
+    disconnect() {}
+  }
 
   const sandbox = {
     document,
@@ -89,6 +105,8 @@ function bootGame() {
     Math,
     Number,
     Infinity,
+    MutationObserver,
+    KeyboardEvent: class KeyboardEvent { constructor(type,init={}) { this.type=type;Object.assign(this,init); } },
     addEventListener(type, handler) {
       if (!listeners.has(type)) listeners.set(type, []);
       listeners.get(type).push(handler);
@@ -100,18 +118,26 @@ function bootGame() {
     setTimeout(handler, delay) {
       timers.push({ handler, delay });
       return timers.length;
+    },
+    setInterval(handler, delay) {
+      intervals.push({ handler, delay });
+      return intervals.length;
     }
   };
   sandbox.window = sandbox;
   sandbox.globalThis = sandbox;
 
   const context = vm.createContext(sandbox);
-  const [textConfig, ...runtimeSources] = gameSources;
-  new vm.Script(textConfig.source, { filename: textConfig.file }).runInContext(context);
-  for (const [index, source] of inlineScripts.entries()) {
-    new vm.Script(source, { filename: `inline-script-${index + 1}.js` }).runInContext(context);
+  const textSource = gameSources.find(item => item.file === 'text.js');
+  new vm.Script(textSource.source, { filename: textSource.file }).runInContext(context);
+  if (inlineScripts[0]) new vm.Script(inlineScripts[0], { filename: 'inline-script-1.js' }).runInContext(context);
+  for (const { file, source } of gameSources) {
+    if (file === 'text.js') continue;
+    new vm.Script(source, { filename: file }).runInContext(context);
   }
-  for (const { file, source } of runtimeSources) new vm.Script(source, { filename: file }).runInContext(context);
+  for (let index=1;index<inlineScripts.length;index++) {
+    new vm.Script(inlineScripts[index], { filename: `inline-script-${index + 1}.js` }).runInContext(context);
+  }
 
   return {
     sandbox,
@@ -128,8 +154,8 @@ function bootGame() {
 test('index.html is a complete game document', () => {
   assert.match(html, /<canvas id="game" width="480" height="270"><\/canvas>/);
   assert.match(html, /<div id="game-title" class="hud-title"><\/div>/);
-  assert.equal(inlineScripts.length, 1, 'expected one inline boot watchdog');
-  for (const file of ['text.js','game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}\"><\\/script>`));
+  assert.equal(inlineScripts.length, 2, 'expected the boot script and terminal-state enhancement script');
+  for (const file of ['text.js','game-core.js','game-world.js','game-render.js']) assert.match(html, new RegExp(`<script src="${file.replace('.', '\\.')}"><\\/script>`));
   assert.match(html, /<link rel="stylesheet" href="styles\.css">/);
   assert.match(styles, /#fatal\.show/);
 });
@@ -156,7 +182,7 @@ test('enemy roster follows the country rules and Belgium stays empty', () => {
   const { sandbox } = bootGame();
   const enemies = sandbox.__SIDE_SCROLLING_LIFE__.getEnemySummary();
   const types = new Set(enemies.map(enemy => enemy.type));
-  for (const type of ['kid', 'bull', 'baguette', 'cyclist', 'ninja', 'chef']) {
+  for (const type of ['kid', 'bull', 'mime', 'cyclist', 'ninja', 'chef']) {
     assert.ok(types.has(type), `missing ${type} enemy`);
   }
   const inBelgium = enemies.filter(enemy =>
