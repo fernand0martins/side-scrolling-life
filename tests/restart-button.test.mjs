@@ -18,6 +18,12 @@ test('restart button appears only for win or game-over states',()=>{
  assert.match(html,/restartButton\.classList\.toggle\('show'/);
 });
 
+test('wedding result panel remains open until restart',()=>{
+ assert.match(html,/const originalBeginCelebration=beginCelebration/);
+ assert.match(html,/messageTime=Infinity/);
+ assert.match(html,/resultMessage\.classList\.add\('show'\)/);
+});
+
 test('restart button triggers the existing full reset path',()=>{
  assert.match(html,/new KeyboardEvent\('keydown',\{code:'KeyR',key:'r',bubbles:true\}\)/);
  assert.doesNotMatch(html,/window\.location\.reload/);
