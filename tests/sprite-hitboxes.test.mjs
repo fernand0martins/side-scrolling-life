@@ -24,8 +24,14 @@ test('enemy hitboxes are defined per rendered enemy type',()=>{
  for(const type of ['kid','bull','mime','cyclist','ninja','chef'])assert.match(hitboxes,new RegExp(`${type}:\\{x:`));
 });
 
+test('floating platform collision matches only the visible top ledge',()=>{
+ assert.match(hitboxes,/platform\.type===0.*form:'ground'/s);
+ assert.match(hitboxes,/x:2,y:0,w:Math\.max\(1,platform\.w-4\),h:6,form:'ledge'/);
+});
+
 test('collision transforms are restored before rendering',()=>{
  assert.match(hitboxes,/try\{originalUpdate\(dt\)\}finally\{/);
+ assert.match(hitboxes,/restorePlatforms\[i\]\(\)/);
  assert.match(hitboxes,/restoreEnemies\[i\]\(\)/);
  assert.match(hitboxes,/restorePlayer\(\)/);
 });
