@@ -34,7 +34,7 @@ window.GAME_TEXT=Object.freeze({
   weddingDetail:score=>`Everyone is here · Final score: ${score}`
  },
  controls:{
-  tips:'Move A/D or arrows · Double jump W/Up/Space · Shift accelerates faster · 1–9 teleport · R restarts',
+  tips:'',
   moveLeft:'Move left',
   moveRight:'Move right',
   jump:'Jump'
