@@ -12,9 +12,16 @@ The game is deliberately dependency-free: open `index.html` in a modern browser 
 | `W`, `↑`, or `Space` | Jump; press again in the air for a double jump |
 | `Shift` | Accelerate faster, up to the 200% speed cap |
 | `1`–`9` or numeric keypad `1`–`9` | Teleport to the matching stage |
+| `K` | Toggle between the classic and anime-inspired visual styles |
 | `R` | Restart the journey |
 
 Touch controls appear automatically on mobile devices.
+
+## Visual styles
+
+The classic style now includes two independent cloud layers. Far clouds move slowly and near clouds move faster to create skybox parallax.
+
+Press `K` at any point to switch to the alternate visual treatment. It uses cel-shaded palettes, stylized horizon silhouettes, atmospheric streaks, drifting leaves, stronger saturation, and a warmer interface treatment. The direction is broadly anime-inspired without using franchise-specific characters, names, emblems, or symbols.
 
 ## Stages
 
@@ -74,7 +81,9 @@ The smoke tests use only Node.js built-in modules. They validate that:
 - double jump works and prevents a third jump;
 - acceleration reaches the intended rate without exceeding the 200% speed cap;
 - Kyuubi is recruited and trails behind the player;
-- mobile controls use non-selectable SVG image assets.
+- mobile controls use non-selectable SVG image assets;
+- `K` toggles the alternate visual mode;
+- the skybox contains independent parallax cloud layers.
 
 Run the tests with:
 
@@ -90,12 +99,14 @@ The project is split into small static files:
 
 - `index.html` contains the page structure, text binding, and boot watchdog.
 - `text.js` contains all user-facing strings and text templates.
-- `styles.css` contains the responsive UI and compact mobile layout.
+- `visual-style.js` owns the `K` visual-style toggle.
+- `styles.css` contains the responsive UI, compact mobile layout, and alternate-mode interface treatment.
 - `game-core.js` contains state, input, physics, stage teleporting, double jump, and dog-follow logic.
-- `game-world.js` contains pixel-art landmarks and world scenery.
+- `game-world.js` contains landmarks, parallax sky rendering, and both world palettes.
 - `game-render.js` contains characters, themed enemies, effects, and the animation loop.
 - `tests/game.test.mjs` boots the scripts inside a lightweight DOM and canvas harness.
 - `tests/text-config.test.mjs` protects the centralized text configuration and mobile sizing.
+- `tests/visual-style.test.mjs` protects the style toggle and parallax implementation.
 - `.github/workflows/test.yml` runs the test suite in CI.
 
 The game exposes a frozen `window.__SIDE_SCROLLING_LIFE__` test interface. It is used for deterministic smoke tests and is not required for normal gameplay.
