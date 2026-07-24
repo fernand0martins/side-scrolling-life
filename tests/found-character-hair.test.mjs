@@ -14,10 +14,9 @@ test('character detail renderer loads after the main renderer',()=>{
  assert.ok(rendererIndex>=0&&hairIndex>rendererIndex);
 });
 
-test('found character uses shoulder hair and glasses before and after joining',()=>{
- assert.match(hair,/drawGirlNpc=function\(\)[\s\S]*'shoulderHairGlasses'/);
- assert.match(hair,/person\(2,0,colors\[1\],'#49302a','shoulderHairGlasses'\)/);
- assert.match(hair,/style==='brideGlasses'/);
+test('found character uses shoulder hair before and after joining',()=>{
+ assert.match(hair,/drawGirlNpc=function\(\)[\s\S]*'shoulderHair'/);
+ assert.match(hair,/person\(2,0,colors\[1\],'#49302a','shoulderHair'\)/);
 });
 
 test('hair extends from crown down over one shoulder',()=>{
@@ -26,13 +25,7 @@ test('hair extends from crown down over one shoulder',()=>{
  assert.match(hair,/rect\(x\+9,y\+15,3,3,hair\)/);
 });
 
-test('first character has a beard in casual and wedding forms',()=>{
- assert.match(hair,/style==='firstBeard'\|\|style==='groomBeard'/);
- assert.match(hair,/person\(-6,0,colors\[0\],'#5e3926','firstBeard'\)/);
- assert.match(hair,/person\(-13,-1,colors\[0\],'#5e3926','groomBeard'\)/);
-});
-
-test('woman has two round glasses lenses',()=>{
- const lensCalls=hair.match(/ctx\.arc\(snap\(x\+[59]\.5\),snap\(y\+3\.5\),2/g)||[];
- assert.equal(lensCalls.length,2);
+test('beard and glasses styling are not applied',()=>{
+ assert.doesNotMatch(hair,/firstBeard|groomBeard|shoulderHairGlasses|brideGlasses/);
+ assert.doesNotMatch(hair,/ctx\.arc\(snap\(x\+[59]\.5\),snap\(y\+3\.5\),2/);
 });
