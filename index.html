@@ -59,6 +59,7 @@ function syncHearts(){
 new MutationObserver(syncHearts).observe(livesCounter,{childList:true,characterData:true,subtree:true});
 syncHearts();
 const restartButton=document.querySelector('#restart-button');
+const resultMessage=document.querySelector('#message');
 restartButton.textContent=T.controls.restart;
 restartButton.setAttribute('aria-label',T.controls.restart);
 restartButton.addEventListener('pointerdown',event=>event.stopImmediatePropagation());
@@ -70,7 +71,9 @@ restartButton.addEventListener('click',event=>{
 });
 function syncRestartButton(){
  const terminalState=window.__SIDE_SCROLLING_LIFE__?.getState?.().state;
- restartButton.classList.toggle('show',terminalState==='over'||terminalState==='win');
+ const terminal=terminalState==='over'||terminalState==='win';
+ restartButton.classList.toggle('show',terminal);
+ if(terminal)resultMessage.classList.add('show');
 }
 window.setInterval(syncRestartButton,100);
 const controlButtons=document.querySelectorAll('.pad button');
@@ -95,5 +98,19 @@ window.setTimeout(()=>{
 <script src="game-core.js"></script>
 <script src="game-world.js"></script>
 <script src="game-render.js"></script>
+<script>
+// Replace the raised-hand detail with compact closed fists.
+drawThrillerDancer=function(){
+ if(state!=='win')return;
+ const entrance=clamp(celebrationClock/3,0,1),x=FINISH_X-520+entrance*225,y=GROUND-30,bounce=Math.sin(celebrationClock*9)*1.2,posed=entrance>=1;
+ ctx.save();ctx.translate(snap(x),snap(y+bounce));
+ rect(-5,-14,10,8,'#a96d4c');rect(-7,-18,14,6,'#17181d');rect(-5,-12,10,2,'#17181d');rect(-2,-10,4,2,'#f2eee8');
+ poly([[-10,-8],[10,-8],[9,10],[-9,10]],'#d52d35');rect(-7,-6,3,14,'#17181d');rect(4,-6,3,14,'#17181d');rect(-2,-7,4,16,'#9e1d27');
+ rect(-8,10,7,15,'#c92b34');rect(1,10,7,15,'#c92b34');rect(-8,24,8,4,'#f1eee5');rect(1,24,8,4,'#f1eee5');rect(-10,27,10,3,'#17181d');rect(1,27,10,3,'#17181d');
+ if(posed){line(-8,-5,-17,-22,4,'#d52d35');line(8,-5,17,-22,4,'#d52d35');rect(-20,-26,7,6,'#a96d4c');rect(13,-26,7,6,'#a96d4c');rect(-19,-25,5,2,'#7d4935');rect(14,-25,5,2,'#7d4935')}
+ else{const swing=Math.sin(celebrationClock*10)*5;line(-8,-5,-13,6+swing,4,'#d52d35');line(8,-5,13,6-swing,4,'#d52d35')}
+ ctx.restore();
+};
+</script>
 </body>
 </html>
