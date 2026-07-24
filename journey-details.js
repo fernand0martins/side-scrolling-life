@@ -11,7 +11,7 @@
  ];
  for(let stage=0;stage<stages.length-1;stage++){
   const base=stage*SEG;
-  for(const [offset,y] of extraCoinPattern[0]){
+  for(const [offset,y] of extraCoinPattern){
    coins.push({x:base+offset,y,w:9,h:12,on:1,a:stage+offset/100,type:'coin'});
   }
  }
@@ -67,6 +67,6 @@
  window.JOURNEY_DETAILS=Object.freeze({
   boneMultiplier:BONE_MULTIPLIER,
   boneCount:bonePickups.length,
-  extraCoinCount:extraCoinPattern[0].length*(stages.length-1)
+  extraCoinCount:extraCoinPattern.length*(stages.length-1)
  });
 })();
