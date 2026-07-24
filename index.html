@@ -99,6 +99,15 @@ window.setTimeout(()=>{
 <script src="game-world.js"></script>
 <script src="game-render.js"></script>
 <script>
+// Terminal wedding messages stay open until the player explicitly restarts.
+const originalBeginCelebration=beginCelebration;
+beginCelebration=function(){
+ originalBeginCelebration();
+ if(state==='win'){
+  messageTime=Infinity;
+  resultMessage.classList.add('show');
+ }
+};
 // Replace the raised-hand detail with compact closed fists.
 drawThrillerDancer=function(){
  if(state!=='win')return;
