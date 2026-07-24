@@ -3,44 +3,62 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>Side Scrolling Life</title>
+<title></title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div id="shell">
  <canvas id="game" width="480" height="270"></canvas>
  <div id="hud-left" class="hud">
-  <div class="hud-title">SIDE SCROLLING LIFE</div>
+  <div id="game-title" class="hud-title"></div>
   <div class="hud-row">
-   <span>Score <strong id="score">00000</strong></span>
-   <span>Lives <strong id="lives">3</strong></span>
-   <span>Speed <strong id="speed">0%</strong></span>
+   <span><span id="score-label"></span> <strong id="score">00000</strong></span>
+   <span><span id="lives-label"></span> <strong id="lives">3</strong></span>
+   <span><span id="speed-label"></span> <strong id="speed">0%</strong></span>
   </div>
  </div>
  <div id="hud-right" class="hud">
-  <div class="hud-row"><strong id="stage-name">1 / 9 · PORTO</strong><span id="stage-sub">THE BEGINNING</span></div>
+  <div class="hud-row"><strong id="stage-name"></strong><span id="stage-sub"></span></div>
   <div class="progress"><div id="progress-bar"></div></div>
  </div>
- <div id="banner"><div id="banner-title">PORTO</div><div id="banner-sub">THE BEGINNING</div></div>
+ <div id="banner"><div id="banner-title"></div><div id="banner-sub"></div></div>
  <div id="message"><div id="message-title"></div><div id="message-detail"></div></div>
- <div id="fatal" role="alert">The game could not start. Reload the page or check the browser console.</div>
+ <div id="fatal" role="alert"></div>
 </div>
-<div id="tips">Move A/D or arrows · Double jump W/Up/Space · Shift accelerates faster · 1–9 teleport · R restarts</div>
+<div id="tips"></div>
 <div class="pad left">
- <button data-key="left" aria-label="Move left"><img src="icons/left.svg" alt="" draggable="false"></button>
- <button data-key="right" aria-label="Move right"><img src="icons/right.svg" alt="" draggable="false"></button>
+ <button data-key="left"><img src="icons/left.svg" alt="" draggable="false"></button>
+ <button data-key="right"><img src="icons/right.svg" alt="" draggable="false"></button>
 </div>
 <div class="pad right">
- <button data-key="jump" aria-label="Jump"><img src="icons/jump.svg" alt="" draggable="false"></button>
+ <button data-key="jump"><img src="icons/jump.svg" alt="" draggable="false"></button>
 </div>
+<script src="text.js"></script>
 <script>
 window.__SIDE_SCROLLING_LIFE_BOOTED__=false;
+const T=window.GAME_TEXT;
+document.title=T.title;
+document.querySelector('#game-title').textContent=T.hud.gameTitle;
+document.querySelector('#score-label').textContent=T.hud.score;
+document.querySelector('#lives-label').textContent=T.hud.lives;
+document.querySelector('#speed-label').textContent=T.hud.speed;
+document.querySelector('#tips').textContent=T.controls.tips;
+const controlButtons=document.querySelectorAll('.pad button');
+controlButtons[0].setAttribute('aria-label',T.controls.moveLeft);
+controlButtons[1].setAttribute('aria-label',T.controls.moveRight);
+controlButtons[2].setAttribute('aria-label',T.controls.jump);
+const firstStage=T.stages[0];
+document.querySelector('#stage-name').textContent=`1 / ${T.stages.length} · ${firstStage.title}`;
+document.querySelector('#stage-sub').textContent=firstStage.sub;
+document.querySelector('#banner-title').textContent=firstStage.title;
+document.querySelector('#banner-sub').textContent=firstStage.sub;
+const fatal=document.querySelector('#fatal');
+fatal.textContent=T.errors.startup;
 window.addEventListener('error',event=>{
- const fatal=document.querySelector('#fatal');
- if(fatal){fatal.textContent='The game could not start: '+(event.message||'unknown error');fatal.classList.add('show')}
+ if(fatal){fatal.textContent=T.errors.startupWithReason(event.message||T.errors.unknown);fatal.classList.add('show')}
 });
 window.setTimeout(()=>{
- if(!window.__SIDE_SCROLLING_LIFE_BOOTED__){const fatal=document.querySelector('#fatal');if(fatal)fatal.classList.add('show')}
+ if(!window.__SIDE_SCROLLING_LIFE_BOOTED__&&fatal)fatal.classList.add('show');
 },2000);
 </script>
 <script src="game-core.js"></script>
